@@ -1,0 +1,65 @@
+using System;
+
+public interface IShape
+{
+    double CalculateArea();
+}
+
+public class Circle : IShape
+{
+    private readonly double _radius;
+
+    public Circle(double radius)
+    {
+        if (radius <= 0)
+            throw new ArgumentException("Radius must be positive");
+        
+        _radius = radius;
+    }
+
+    public double CalculateArea()
+    {
+        return Math.PI * Math.Pow(_radius, 2);
+    }
+}
+
+public class Triangle : IShape
+{
+    private readonly double _a;
+    private readonly double _b;
+    private readonly double _c;
+
+    public Triangle(double a, double b, double c)
+    {
+        if (a <= 0 || b <= 0 || c <= 0)
+            throw new ArgumentException("Sides must be positive");
+        
+        if (a + b <= c || a + c <= b || b + c <= a)
+            throw new ArgumentException("Invalid triangle sides");
+
+        _a = a;
+        _b = b;
+        _c = c;
+    }
+
+    public double CalculateArea()
+    {
+        double p = (_a + _b + _c) / 2;
+        return Math.Sqrt(p * (p - _a) * (p - _b) * (p - _c));
+    }
+
+    public bool IsRightAngled()
+    {
+        double[] sides = { _a, _b, _c };
+        Array.Sort(sides);
+        return Math.Abs(Math.Pow(sides[2], 2) - (Math.Pow(sides[0], 2) + Math.Pow(sides[1], 2))) < 0.0001;
+    }
+}
+
+public static class ShapeCalculator
+{
+    public static double CalculateArea(IShape shape)
+    {
+        return shape.CalculateArea();
+    }
+}
